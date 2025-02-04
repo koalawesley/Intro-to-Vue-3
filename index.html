@@ -1,44 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Vue Mastery</title>
-    <!-- Import Styles -->
-    <link rel="stylesheet" href="./assets/styles.css" />
-    <!-- Import Vue.js -->
-    <script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
-  </head>
-  <body>
-    <div id="app">
-      <div class="nav-bar"></div>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Vue Mastery</title>
+		<!-- Import Styles -->
+		<link rel="stylesheet" href="./assets/styles.css" />
+		<!-- Import Vue.js -->
+		<script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
+		<style>
+			/* existing styles... */
+			.color-circle {
+				width: 50px;
+				height: 50px;
+				margin: 8px;
+				border-radius: 50%;
+				cursor: pointer;
+			}
 
-      <div class="cart">Cart({{ cart }})</div>
-      
-      <div class="product-display">
-        <div class="product-container">
-          <div class="product-image">
-            <img v-bind:src="image">
-          </div>
-          <div class="product-info">
-            <h1>{{ product }}</h1>
-            <p v-if="inStock">In Stock</p>
-            <p v-else>Out of Stock</p>
-            <ul>
-              <li v-for="detail in details">{{ detail }}</li>
-            </ul>
-            <div v-for="variant in variants" :key="variant.id">{{ variant.color }}</div>
-            <button class="button">Add to Cart</button>
-          </div>
-        </div>
-      </div>
-    </div>
+			.active {
+				border: 2px solid #42b983;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="nav-bar"></div>
 
-    <!-- Import App -->
-    <script src="./main.js"></script>
+			<div class="cart">Cart({{ cart.qty }})</div>
 
-    <!-- Mount App -->
-    <script>
-      const mountedApp = app.mount('#app')
-    </script>
-  </body>
+			<div class="product-display">
+				<div class="product-container">
+					<div class="product-image">
+						<img
+							v-bind:src="variants.find(variant => variant.id === selectedVariant).image"
+						/>
+					</div>
+					<div class="product-info">
+						<h1>{{ title }}</h1>
+						<p v-if="inStock">In Stock</p>
+						<p v-else>Out of Stock</p>
+						<ul>
+							<li v-for="detail in details">{{ detail }}</li>
+						</ul>
+						<div
+							v-for="variant in variants"
+							:key="variant.id"
+							@click="updateProduct(variant.id)"
+							class="color-circle"
+							:class="{ active: selectedVariant === variant.id }"
+							:style="{ backgroundColor: variant.color }"
+						></div>
+						<button class="button" @click="addCart">
+							Add to Cart
+						</button>
+
+						<button
+							class="button"
+							@click="removeFromCart"
+							:disabled="cart.qty === 0"
+						>
+							Remove
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Import App -->
+		<script src="./main.js"></script>
+
+		<!-- Mount App -->
+		<script>
+			const mountedApp = app.mount('#app');
+		</script>
+	</body>
 </html>
